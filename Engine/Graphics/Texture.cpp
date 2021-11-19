@@ -1,60 +1,67 @@
 #include "Texture.h"
-#include "Graphics/Renderer.h"
-
-#include <iostream>
-#include <cassert>
+#include <SDL_image.h>
 
 namespace nh
 {
-	Texture::Texture(Renderer* renderer)
-	{
-		assert(renderer);
-		this->renderer = renderer->renderer;
-	}
+    Texture::~Texture()
+    {
+        glDeleteTextures(1, &texture);
+    }
 
-	bool Texture::Load(const std::string& filename, void* data)
-	{
-		renderer = reinterpret_cast<Renderer*>(data)->renderer;
+    bool Texture::Load(const std::string& name, void* null)
+    {
+        return CreateTexture(name);
+    }
 
-		SDL_Surface* surface = IMG_Load(filename.c_str());
+    bool Texture::CreateTexture(const std::string& filename, GLenum target, GLuint unit)
+    {
+        target = target;
+        unit = unit;
 
-		//assert(surface);
-		if (!surface)
-		{
-			std::cout << "IMG_Load Error: " << SDL_GetError() << std::endl;
-			return false;
-		}
+        SDL_Surface* surface = IMG_Load(filename.c_str());
+        FlipSurface(surface);
 
-		texture = SDL_CreateTextureFromSurface(renderer, surface);
-		SDL_FreeSurface(surface);
+        if (surface == nullptr)
+        {
+            SDL_Log("Failed to create surface: %s", SDL_GetError());
+            return false;
+        }
 
-		if (!texture)
-		{
-			std::cout << "SDL_CreateTextureFromSurface Error: " << SDL_GetError() << std::endl;
-			return false;
-		}
+        glGenTextures(1, &texture);
+        glBindTexture(target, texture);
 
-		return true;
-	}
+        GLenum format = (surface->format->BytesPerPixel == 4) ? GL_RGBA : GL_RGB;
+        glTexImage2D(target, 0, format, surface->w, surface->h, 0, format, GL_UNSIGNED_BYTE, surface->pixels);
 
-	bool Texture::Create(SDL_Surface* surface)
-	{
-		texture = SDL_CreateTextureFromSurface(renderer, surface);
-		SDL_FreeSurface(surface);
+        glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(target, GL_TEXTURE_WRAP_S, GL_CLAMP);
+        glTexParameteri(target, GL_TEXTURE_WRAP_T, GL_CLAMP);
 
-		if (!texture)
-		{
-			std::cout << "SDL_CreateTextureFromSurface Error: " << SDL_GetError() << std::endl;
-			return false;
-		}
+        return true;
+    }
 
-		return true;
-	}
+    void Texture::FlipSurface(SDL_Surface* surface)
+    {
+        SDL_LockSurface(surface);
 
-	glm::vec2 Texture::GetSize() const
-	{
-		SDL_Point p;
-		SDL_QueryTexture(texture, nullptr, nullptr, &p.x, &p.y);
-		return { p.x, p.y };
-	}
+        int pitch = surface->pitch; // row size
+        uint8_t* temp = new uint8_t[pitch]; // intermediate buffer
+        uint8_t* pixels = (uint8_t*)surface->pixels;
+
+        for (int i = 0; i < surface->h / 2; ++i) {
+            // get pointers to the two rows to swap
+            uint8_t* row1 = pixels + i * pitch;
+            uint8_t* row2 = pixels + (surface->h - i - 1) * pitch;
+
+            // swap rows
+            memcpy(temp, row1, pitch);
+            memcpy(row1, row2, pitch);
+            memcpy(row2, temp, pitch);
+        }
+
+        delete[] temp;
+
+        SDL_UnlockSurface(surface);
+    }
 }
