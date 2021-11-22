@@ -22,6 +22,8 @@
 #include "Graphics/Texture.h"
 #include "Graphics/Program.h"
 #include "Graphics/Shader.h"
+#include "Graphics/VertexBuffer.h"
+#include "Graphics/IndexBuffer.h"
 
 //Audio
 #include "Audio/AudioSystem.h"
