@@ -9,16 +9,38 @@
 
 const float vertices[] =
 {
-	-0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-	 0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,	 
-	 0.5f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
-	-0.5f,  0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f
+	// front
+	-1.0f, -1.0f,  1.0, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+	 1.0f, -1.0f,  1.0, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
+	 1.0f,  1.0f,  1.0, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+	-1.0f,  1.0f,  1.0, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f,
+	// back
+	-1.0f, -1.0f, -1.0, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+	 1.0f, -1.0f, -1.0, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
+	 1.0f,  1.0f, -1.0, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
+	-1.0f,  1.0f, -1.0, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f
 };
 
 const GLuint indices[] =
 {
-	0, 2, 1,
-	0, 3, 2
+	// front
+	0, 1, 2,
+	2, 3, 0,
+	// right
+	1, 5, 6,
+	6, 2, 1,
+	// back
+	7, 6, 5,
+	5, 4, 7,
+	// left
+	4, 0, 3,
+	3, 7, 4,
+	// bottom
+	4, 5, 1,
+	1, 0, 4,
+	// top
+	3, 2, 6,
+	6, 7, 3
 };
 
 int main(int argc, char** argv)
@@ -40,8 +62,8 @@ int main(int argc, char** argv)
 	program->Use();
 
 	std::shared_ptr<nh::IndexBuffer> vertexBuffer = engine.Get<nh::ResourceSystem>()->Get<nh::IndexBuffer>("vertex_index_buffer");
-	vertexBuffer->CreateVertexBuffer(sizeof(vertices), 4, (void*)vertices);
-	vertexBuffer->CreateIndexBuffer(GL_UNSIGNED_INT, 6, (void*)indices);
+	vertexBuffer->CreateVertexBuffer(sizeof(vertices), 8, (void*)vertices);
+	vertexBuffer->CreateIndexBuffer(GL_UNSIGNED_INT, 36, (void*)indices);
 	vertexBuffer->SetAttribute(0, 3, 8 * sizeof(GL_FLOAT), 0);
 	vertexBuffer->SetAttribute(1, 3, 8 * sizeof(GL_FLOAT), (size_t)(3 * sizeof(GL_FLOAT)));
 	vertexBuffer->SetAttribute(2, 2, 8 * sizeof(GL_FLOAT), (size_t)(6 * sizeof(GL_FLOAT)));
@@ -54,8 +76,16 @@ int main(int argc, char** argv)
 	//uniform
 	float time = 0;
 	glm::vec3 tint{ 1.0f, 1.0f, 1.0f };
-	program->SetUniform("scale", time);
 	program->SetUniform("tint", tint);
+
+	glm::mat4 view = glm::lookAt(glm::vec3{ 0, 0, 2 }, glm::vec3{ 0, 0, 0 }, glm::vec3{ 0, 1, 0 });
+	program->SetUniform("view", view);
+
+	glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
+	program->SetUniform("projection", projection);
+
+	glm::vec3 translate{ 0.0f };
+	float angle = 0;
 
 	bool quit = false;
 	while (!quit)
@@ -77,12 +107,39 @@ int main(int argc, char** argv)
 
 		SDL_PumpEvents();
 
-		time += 0.1f;
-		program->SetUniform("scale", (std::sin(time) / 2) + 1);
+		engine.Update();
+		
+		if (engine.Get<nh::InputSystem>()->GetKeyState(SDL_SCANCODE_A) == nh::InputSystem::eKeyState::Held)
+		{
+			translate.x -= 1 * engine.time.deltaTime;
+		}
+
+		if (engine.Get<nh::InputSystem>()->GetKeyState(SDL_SCANCODE_D) == nh::InputSystem::eKeyState::Held)
+		{
+			translate.x += 1 * engine.time.deltaTime;
+		}
+		
+		if (engine.Get<nh::InputSystem>()->GetKeyState(SDL_SCANCODE_W) == nh::InputSystem::eKeyState::Held)
+		{
+			translate.y += 1 * engine.time.deltaTime;
+		}
+
+		if (engine.Get<nh::InputSystem>()->GetKeyState(SDL_SCANCODE_S) == nh::InputSystem::eKeyState::Held)
+		{
+			translate.y -= 1 * engine.time.deltaTime;
+		}
+
+		angle += engine.time.deltaTime;
+
+		glm::mat4 model{ 1.0f };
+		model = glm::translate(model, translate);
+		model = glm::rotate(model, angle, glm::vec3{ 0, 1, 0 });
+		model = glm::scale(model, glm::vec3{ 0.25f });
+		program->SetUniform("model", model);
 
 		engine.Get<nh::Renderer>()->BeginFrame();
 
-		vertexBuffer->Draw(GL_TRIANGLES);
+		vertexBuffer->Draw();
 
 		engine.Get<nh::Renderer>()->EndFrame();
 	}

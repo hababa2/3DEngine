@@ -7,11 +7,13 @@ layout(location = 2) in vec2 texCoord;
 out vec3 fragColor;
 out vec2 fragTexCoord;
 
-uniform float scale;
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 projection;
 
 void main()
 {
 	fragColor = color;
 	fragTexCoord = texCoord;
-    gl_Position = vec4(position * scale, 1.0);
+    gl_Position = projection * view * model * vec4(position, 1.0);
 }
