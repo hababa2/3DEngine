@@ -19,7 +19,7 @@ namespace nh
 	{
 		for (auto& a : actors)
 		{
-			//a->Draw(renderer);
+			a->Draw(renderer);
 		}
 	}
 

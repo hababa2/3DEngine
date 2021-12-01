@@ -49,19 +49,25 @@ int main(int argc, char** argv)
 	engine.Startup();
 	engine.Get<nh::Renderer>()->Create("OpenGL", 800, 600);
 
+	// create scene
+	std::unique_ptr<nh::Scene> scene = std::make_unique<nh::Scene>();
+	scene->engine = &engine;
+
 	nh::SeedRandom(static_cast<unsigned int>(time(nullptr)));
 	nh::SetFilePath("../Resources");
 
-	std::shared_ptr<nh::Program> program = engine.Get<nh::ResourceSystem>()->Get<nh::Program>("basic_program");
-	std::shared_ptr<nh::Shader> vshader = engine.Get<nh::ResourceSystem>()->Get<nh::Shader>("shaders/basic.vert", (void*)GL_VERTEX_SHADER);
-	std::shared_ptr<nh::Shader> fshader = engine.Get<nh::ResourceSystem>()->Get<nh::Shader>("shaders/basic.frag", (void*)GL_FRAGMENT_SHADER);
+	//shaders
+	std::shared_ptr<nh::Program> program = engine.Get<nh::ResourceSystem>()->Get<nh::Program>("light_shader");
+	std::shared_ptr<nh::Shader> vshader = engine.Get<nh::ResourceSystem>()->Get<nh::Shader>("shaders/light.vert", (void*)GL_VERTEX_SHADER);
+	std::shared_ptr<nh::Shader> fshader = engine.Get<nh::ResourceSystem>()->Get<nh::Shader>("shaders/light.frag", (void*)GL_FRAGMENT_SHADER);
 
 	program->AddShader(vshader);
 	program->AddShader(fshader);
 	program->Link();
 	program->Use();
 
-	std::shared_ptr<nh::IndexBuffer> vertexBuffer = engine.Get<nh::ResourceSystem>()->Get<nh::IndexBuffer>("vertex_index_buffer");
+	//buffers
+	std::shared_ptr<nh::VertexBuffer> vertexBuffer = engine.Get<nh::ResourceSystem>()->Get<nh::VertexBuffer>("cube_mesh");
 	vertexBuffer->CreateVertexBuffer(sizeof(vertices), 8, (void*)vertices);
 	vertexBuffer->CreateIndexBuffer(GL_UNSIGNED_INT, 36, (void*)indices);
 	vertexBuffer->SetAttribute(0, 3, 8 * sizeof(GL_FLOAT), 0);
@@ -69,23 +75,58 @@ int main(int argc, char** argv)
 	vertexBuffer->SetAttribute(2, 2, 8 * sizeof(GL_FLOAT), (size_t)(6 * sizeof(GL_FLOAT)));
 
 	//texture
-	nh::Texture texture;
-	texture.CreateTexture("Textures/llama.jpg");
-	texture.Bind();
+	{
+		auto texture = engine.Get<nh::ResourceSystem>()->Get<nh::Texture>("textures/llama.jpg");
+		texture = engine.Get<nh::ResourceSystem>()->Get<nh::Texture>("textures/rocks.bmp");
+		texture = engine.Get<nh::ResourceSystem>()->Get<nh::Texture>("textures/ogre.bmp");
+		texture = engine.Get<nh::ResourceSystem>()->Get<nh::Texture>("textures/spot.png");
+		texture->Bind();
+	}
 
-	//uniform
-	float time = 0;
-	glm::vec3 tint{ 1.0f, 1.0f, 1.0f };
-	program->SetUniform("tint", tint);
+	//camera
+	{
+		auto actor = nh::ObjectFactory::Instance().Create<nh::Actor>("Actor");
+		actor->name = "camera";
+		actor->transform.position = glm::vec3{ 0, 0, 5 };
 
-	glm::mat4 view = glm::lookAt(glm::vec3{ 0, 0, 2 }, glm::vec3{ 0, 0, 0 }, glm::vec3{ 0, 1, 0 });
-	program->SetUniform("view", view);
+		{
+			auto component = nh::ObjectFactory::Instance().Create<nh::CameraComponent>("CameraComponent");
+			component->SetPerspective(45.0f, 800.0f / 600.0f, 0.01f, 100.0f);
+			actor->AddComponent(std::move(component));
+		}
 
-	glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
-	program->SetUniform("projection", projection);
+		{
+			auto component = nh::ObjectFactory::Instance().Create<nh::FreeCameraController>("FreeCameraController");
+			component->speed = 3;
+			component->sensitivity = 0.1f;
+			actor->AddComponent(std::move(component));
+		}
 
-	glm::vec3 translate{ 0.0f };
-	float angle = 0;
+		scene->AddActor(std::move(actor));
+	}
+
+	//cube
+	{
+		auto actor = nh::ObjectFactory::Instance().Create<nh::Actor>("Actor");
+		actor->name = "cube";
+		actor->transform.position = glm::vec3{ 0 };
+		actor->transform.scale = glm::vec3{ 1 };
+
+		auto component = nh::ObjectFactory::Instance().Create<nh::ModelComponent>("ModelComponent");
+		component->program = engine.Get<nh::ResourceSystem>()->Get<nh::Program>("light_shader");
+		component->model = engine.Get<nh::ResourceSystem>()->Get<nh::Model>("models/spot.obj");
+
+		actor->AddComponent(std::move(component));
+		scene->AddActor(std::move(actor));
+	}
+
+	auto shader = engine.Get<nh::ResourceSystem>()->Get<nh::Program>("light_shader");
+	shader->SetUniform("light.ambient", glm::vec3{ 1});
+	shader->SetUniform("light.material", glm::vec3{ 1 });
+	shader->SetUniform("light.spectular", glm::vec3{ 1 });
+	shader->SetUniform("material.ambient", glm::vec3{ 1 });
+	shader->SetUniform("material.material", glm::vec3{ 1 });
+	shader->SetUniform("material.spectular", glm::vec3{ 1 });
 
 	bool quit = false;
 	while (!quit)
@@ -108,38 +149,17 @@ int main(int argc, char** argv)
 		SDL_PumpEvents();
 
 		engine.Update();
-		
-		if (engine.Get<nh::InputSystem>()->GetKeyState(SDL_SCANCODE_A) == nh::InputSystem::eKeyState::Held)
-		{
-			translate.x -= 1 * engine.time.deltaTime;
-		}
+		scene->Update(engine.time.deltaTime);
 
-		if (engine.Get<nh::InputSystem>()->GetKeyState(SDL_SCANCODE_D) == nh::InputSystem::eKeyState::Held)
+		auto actor = scene->FindActor("cube");
+		if (actor != nullptr)
 		{
-			translate.x += 1 * engine.time.deltaTime;
+			actor->transform.rotation.y += engine.time.deltaTime;
 		}
-		
-		if (engine.Get<nh::InputSystem>()->GetKeyState(SDL_SCANCODE_W) == nh::InputSystem::eKeyState::Held)
-		{
-			translate.y += 1 * engine.time.deltaTime;
-		}
-
-		if (engine.Get<nh::InputSystem>()->GetKeyState(SDL_SCANCODE_S) == nh::InputSystem::eKeyState::Held)
-		{
-			translate.y -= 1 * engine.time.deltaTime;
-		}
-
-		angle += engine.time.deltaTime;
-
-		glm::mat4 model{ 1.0f };
-		model = glm::translate(model, translate);
-		model = glm::rotate(model, angle, glm::vec3{ 0, 1, 0 });
-		model = glm::scale(model, glm::vec3{ 0.25f });
-		program->SetUniform("model", model);
 
 		engine.Get<nh::Renderer>()->BeginFrame();
 
-		vertexBuffer->Draw();
+		scene->Draw(engine.Get<nh::Renderer>());
 
 		engine.Get<nh::Renderer>()->EndFrame();
 	}

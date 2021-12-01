@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Object.h"
+#include "Scene.h"
 #include "Math/Transform.h"
 #include "Component/Component.h"
 #include "Core/Serializable.h"
@@ -25,7 +26,7 @@ namespace nh
 		void Initialize() {};
 
 		void Update(float dt);
-		//void Draw(Renderer* renderer);
+		void Draw(Renderer* renderer);
 
 		void BeginContact(Actor* other);
 		void EndContact(Actor* other);

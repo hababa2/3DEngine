@@ -40,25 +40,25 @@ namespace nh
 		}
 	}
 
-	//void Actor::Draw(Renderer* renderer)
-	//{
-	//	if (active)
-	//	{
-	//		for (auto& c : components)
-	//		{
-	//			GraphicsComponent* g;
-	//			if (g = dynamic_cast<GraphicsComponent*>(c.get()))
-	//			{
-	//				g->Draw(renderer);
-	//			}
-	//		}
-	//
-	//		for (auto& c : children)
-	//		{
-	//			c->Draw(renderer);
-	//		}
-	//	}
-	//}
+	void Actor::Draw(Renderer* renderer)
+	{
+		if (active)
+		{
+			for (auto& c : components)
+			{
+				GraphicsComponent* g;
+				if (g = dynamic_cast<GraphicsComponent*>(c.get()))
+				{
+					g->Draw(renderer);
+				}
+			}
+	
+			for (auto& c : children)
+			{
+				c->Draw(renderer);
+			}
+		}
+	}
 
 	void Actor::BeginContact(Actor* other)
 	{

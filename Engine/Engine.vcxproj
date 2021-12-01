@@ -98,7 +98,8 @@
     </Link>
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)lib/SDL/lib/$(PlatformTarget);$(SolutionDir)lib/fmod/api/core/lib/$(PlatformTarget)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;fmod_vc.lib;SDL2_ttf.lib</AdditionalDependencies>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -130,7 +131,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)lib/SDL/include;$(ProjectDir);$(SolutionDir)lib/fmod/api/core/inc;$(SolutionDir)lib/Box2D/include;$(SolutionDir)lib/JSON/include/rapidjson</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)lib/assimp/include;$(SolutionDir)lib/SDL/include;$(ProjectDir);$(SolutionDir)lib/fmod/api/core/inc;$(SolutionDir)lib/Box2D/include;$(SolutionDir)lib/JSON/include/rapidjson;$(SolutionDir)lib/glad/include;$(SolutionDir)lib/glm</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -140,7 +141,7 @@
     </Link>
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)lib/SDL/lib/$(PlatformTarget);$(SolutionDir)lib/fmod/api/core/lib/$(PlatformTarget);$(SolutionDir)lib/Box2D/lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;fmod_vc.lib;SDL2_ttf.lib;box2d.lib</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;fmod_vc.lib;SDL2_ttf.lib</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -167,10 +168,14 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\lib\glad\src\glad.c" />
     <ClCompile Include="Audio\AudioChannel.cpp" />
     <ClCompile Include="Audio\AudioSystem.cpp" />
     <ClCompile Include="Component\AudioComponent.cpp" />
+    <ClCompile Include="Component\CameraComponent.cpp" />
+    <ClCompile Include="Component\FreeCameraController.cpp" />
+    <ClCompile Include="Component\LightComponent.cpp" />
+    <ClCompile Include="Component\MeshComponent.cpp" />
+    <ClCompile Include="Component\ModelComponent.cpp" />
     <ClCompile Include="Component\PhysicsComponent.cpp" />
     <ClCompile Include="Core\FileSystem.cpp" />
     <ClCompile Include="Core\json.cpp" />
@@ -178,8 +183,8 @@
     <ClCompile Include="Core\Utilities.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="Framework\EventSystem.cpp" />
-    <ClCompile Include="Graphics\IndexBuffer.cpp" />
     <ClCompile Include="Graphics\Material.cpp" />
+    <ClCompile Include="Graphics\Model.cpp" />
     <ClCompile Include="Graphics\Program.cpp" />
     <ClCompile Include="Graphics\Renderer.cpp" />
     <ClCompile Include="Graphics\Shader.cpp" />
@@ -195,8 +200,13 @@
     <ClInclude Include="Audio\AudioChannel.h" />
     <ClInclude Include="Audio\AudioSystem.h" />
     <ClInclude Include="Component\AudioComponent.h" />
+    <ClInclude Include="Component\CameraComponent.h" />
+    <ClInclude Include="Component\FreeCameraController.h" />
     <ClInclude Include="Component\Component.h" />
     <ClInclude Include="Component\GraphicsComponent.h" />
+    <ClInclude Include="Component\LightComponent.h" />
+    <ClInclude Include="Component\MeshComponent.h" />
+    <ClInclude Include="Component\ModelComponent.h" />
     <ClInclude Include="Component\PhysicsComponent.h" />
     <ClInclude Include="Core\FileSystem.h" />
     <ClInclude Include="Core\json.h" />
@@ -208,8 +218,8 @@
     <ClInclude Include="Framework\Factory.h" />
     <ClInclude Include="Framework\Singleton.h" />
     <ClInclude Include="Framework\System.h" />
-    <ClInclude Include="Graphics\IndexBuffer.h" />
     <ClInclude Include="Graphics\Material.h" />
+    <ClInclude Include="Graphics\Model.h" />
     <ClInclude Include="Graphics\Program.h" />
     <ClInclude Include="Graphics\Renderer.h" />
     <ClInclude Include="Graphics\Shader.h" />
@@ -217,7 +227,6 @@
     <ClInclude Include="Graphics\VertexBuffer.h" />
     <ClInclude Include="Input\InputSystem.h" />
     <ClInclude Include="MathTypes.h" />
-    <ClInclude Include="Math\MathTypes.h" />
     <ClInclude Include="Math\Random.h" />
     <ClInclude Include="Math\Transform.h" />
     <ClInclude Include="Object\Actor.h" />

@@ -38,9 +38,10 @@ namespace nh
 		bool IsPreviousKeyDown(int id) const { return prevKeyboardState[id]; }
 
 		const glm::vec2& GetMousePosition() const { return mousePosition; }
-		eKeyState GetButtonState(int id) const;
+		const glm::vec2& GetMouseRelative() const { return mouseRelative; }
 		bool IsButtonDown(int id) const { return mouseButtonState[id]; }
 		bool IsPreviousButtonDown(int id) const { return prevMouseButtonState[id]; }
+		eKeyState GetButtonState(int id) const;
 
 	private:
 		std::vector<Uint8> keyboardState;
@@ -48,6 +49,9 @@ namespace nh
 		int numKeys;
 
 		glm::vec2 mousePosition;
+		glm::vec2 prevMousePosition;
+		glm::vec2 mouseRelative;
+
 		std::array<Uint8, 3> mouseButtonState;
 		std::array<Uint8, 3> prevMouseButtonState;
 	};

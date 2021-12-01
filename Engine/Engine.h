@@ -23,7 +23,7 @@
 #include "Graphics/Program.h"
 #include "Graphics/Shader.h"
 #include "Graphics/VertexBuffer.h"
-#include "Graphics/IndexBuffer.h"
+#include "Graphics/Model.h"
 
 //Audio
 #include "Audio/AudioSystem.h"
@@ -41,6 +41,11 @@
 //Components
 #include "Component/AudioComponent.h"
 #include "Component/PhysicsComponent.h"
+#include "Component/MeshComponent.h"
+#include "Component/CameraComponent.h"
+#include "Component/ModelComponent.h"
+
+#include "Component/FreeCameraController.h"
 
 #include <vector>
 #include <memory>

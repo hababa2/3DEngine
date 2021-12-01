@@ -85,9 +85,6 @@
     <ClCompile Include="Component\PhysicsComponent.cpp">
       <Filter>Source\Component</Filter>
     </ClCompile>
-    <ClCompile Include="..\lib\glad\src\glad.c">
-      <Filter>Source\Graphics</Filter>
-    </ClCompile>
     <ClCompile Include="Graphics\Shader.cpp">
       <Filter>Source\Graphics</Filter>
     </ClCompile>
@@ -100,8 +97,23 @@
     <ClCompile Include="Graphics\VertexBuffer.cpp">
       <Filter>Source\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="Graphics\IndexBuffer.cpp">
+    <ClCompile Include="Component\MeshComponent.cpp">
+      <Filter>Source\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\CameraComponent.cpp">
+      <Filter>Source\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\FreeCameraController.cpp">
+      <Filter>Source\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\LightComponent.cpp">
+      <Filter>Source\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Model.cpp">
       <Filter>Source\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\ModelComponent.cpp">
+      <Filter>Source\Component</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -183,9 +195,6 @@
     <ClInclude Include="MathTypes.h">
       <Filter>Source\Math</Filter>
     </ClInclude>
-    <ClInclude Include="Math\MathTypes.h">
-      <Filter>Source\Math</Filter>
-    </ClInclude>
     <ClInclude Include="Component\PhysicsComponent.h">
       <Filter>Source\Component</Filter>
     </ClInclude>
@@ -201,8 +210,23 @@
     <ClInclude Include="Graphics\VertexBuffer.h">
       <Filter>Source\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="Graphics\IndexBuffer.h">
+    <ClInclude Include="Component\MeshComponent.h">
+      <Filter>Source\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\CameraComponent.h">
+      <Filter>Source\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\FreeCameraController.h">
+      <Filter>Source\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\LightComponent.h">
+      <Filter>Source\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Model.h">
       <Filter>Source\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\ModelComponent.h">
+      <Filter>Source\Component</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
