@@ -20,6 +20,9 @@ namespace nh
 		template<typename T>
 		std::shared_ptr<T> Get(const std::string& name, void* data = nullptr);
 
+		template <typename T>
+		std::vector<std::shared_ptr<T>> Get();
+
 		void Add(const std::string& name, std::shared_ptr<Resource> resource);
 
 	private:
@@ -43,6 +46,23 @@ namespace nh
 			return resource;
 		}
 	}
+
+	template <typename T>
+	inline std::vector<std::shared_ptr<T>> ResourceSystem::Get()
+	{
+		std::vector<std::shared_ptr<T>> result;
+
+		for (auto& element : resources)
+		{
+			if (dynamic_cast<T*>(element.second.get()))
+			{
+				result.push_back(std::dynamic_pointer_cast<T>(element.second));
+			}
+		}
+
+		return result;
+	}
+
 
 	inline void ResourceSystem::Add(const std::string& name, std::shared_ptr<Resource> resource)
 	{

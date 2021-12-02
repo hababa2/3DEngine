@@ -44,6 +44,7 @@
 #include "Component/MeshComponent.h"
 #include "Component/CameraComponent.h"
 #include "Component/ModelComponent.h"
+#include "Component/LightComponent.h"
 
 #include "Component/FreeCameraController.h"
 
@@ -52,6 +53,7 @@
 #include <algorithm>
 
 #define REGISTER_CLASS(T) nh::ObjectFactory::Instance().Register<T>(#T)
+#define CREATE_ENGINE_OBJECT(class) nh::ObjectFactory::Instance().Create<nh::class>(#class)
 
 namespace nh
 {

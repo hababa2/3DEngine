@@ -1,4 +1,5 @@
 #include "Program.h"
+#include "Engine.h"
 
 namespace nh
 {
@@ -16,9 +17,39 @@ namespace nh
 		}
 	}
 
-	bool Program::Load(const std::string& name, void* null)
+	bool Program::Load(const std::string& filename, void* data)
 	{
+		auto engine = reinterpret_cast<Engine*>(data);
+
+		rapidjson::Document document;
+		bool success = nh::json::Load(filename, document);
+		if (!success)
+		{
+			SDL_Log("Could not load shader file (%s).", filename.c_str());
+			return false;
+		}
+
+		std::string vertex_shader;
+		JSON_READ(document, vertex_shader);
+		if (!vertex_shader.empty())
+		{
+			auto vshader = engine->Get<nh::ResourceSystem>()->Get<nh::Shader>(vertex_shader, (void*)GL_VERTEX_SHADER);
+			AddShader(vshader);
+		}
+
+		std::string fragment_shader;
+		JSON_READ(document, fragment_shader);
+		if (!fragment_shader.empty())
+		{
+			auto fshader = engine->Get<nh::ResourceSystem>()->Get<nh::Shader>(fragment_shader, (void*)GL_FRAGMENT_SHADER);
+			AddShader(fshader);
+		}
+
+		Link();
+		Use();
+
 		return true;
+
 	}
 
 	void Program::AddShader(const std::shared_ptr<Shader>& shader)

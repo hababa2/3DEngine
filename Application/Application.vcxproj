@@ -157,6 +157,8 @@
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\Build\Resources\Materials\spot.mtl" />
+    <None Include="..\Build\Resources\Materials\wood.mtl" />
     <None Include="..\Build\Resources\Shaders\basic.frag" />
     <None Include="..\Build\Resources\Shaders\basic.vert" />
     <None Include="..\Build\Resources\Shaders\light.frag" />
