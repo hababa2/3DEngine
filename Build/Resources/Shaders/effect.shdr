@@ -1,0 +1,4 @@
+{
+	"vertex_shader": "shaders/effect.vert",
+	"fragment_shader": "shaders/effect.frag"
+}

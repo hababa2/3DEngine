@@ -18,7 +18,6 @@ namespace nh
 				shader->SetUniform("light.ambient", ambient);
 				shader->SetUniform("light.diffuse", diffuse);
 				shader->SetUniform("light.specular", specular);
-				shader->SetUniform("lightPosition", position);
 			}
 		}
 	}

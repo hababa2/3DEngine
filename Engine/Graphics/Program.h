@@ -35,6 +35,7 @@ namespace nh
 
 	private:
 		GLint GetUniform(const std::string& name);
+		void DisplayInfo();
 
 	private:
 		GLuint program = 0;
