@@ -94,5 +94,8 @@
     <None Include="..\Build\Resources\Shaders\effect.vert">
       <Filter>Resources\Shaders</Filter>
     </None>
+    <None Include="..\Build\Resources\Materials\ship.mtl">
+      <Filter>Resources\Materials</Filter>
+    </None>
   </ItemGroup>
 </Project>

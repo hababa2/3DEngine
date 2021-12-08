@@ -159,6 +159,7 @@
   <ItemGroup>
     <None Include="..\Build\Resources\Materials\bricks.mtl" />
     <None Include="..\Build\Resources\Materials\ogre.mtl" />
+    <None Include="..\Build\Resources\Materials\ship.mtl" />
     <None Include="..\Build\Resources\Materials\spot.mtl" />
     <None Include="..\Build\Resources\Materials\wood.mtl" />
     <None Include="..\Build\Resources\Scenes\main.scn" />

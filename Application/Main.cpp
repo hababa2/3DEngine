@@ -61,7 +61,7 @@ int main(int argc, char** argv)
 
 		//update shader
 		auto shader = engine->Get<nh::ResourceSystem>()->Get<nh::Program>("Shaders/effect.shdr");
-		if (shader)
+		if (shader != nullptr)
 		{
 			shader->Use();
 			shader->SetUniform("time", time);
