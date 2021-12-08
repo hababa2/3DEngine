@@ -14,9 +14,10 @@
     1,
     1
   ],
-  "shininess": 256,
-  "shader_name": "shaders/phong_light.shdr",
+  "shininess": 200,
+  "shader_name": "shaders/normal_light.shdr",
   "texture_names": [
-    "Textures/wood.png"
+    "Textures/ogre.bmp",
+    "Textures/ogre_normal.bmp"
   ]
 }

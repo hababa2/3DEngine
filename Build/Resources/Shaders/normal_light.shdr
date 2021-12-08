@@ -1,0 +1,4 @@
+{
+	"vertex_shader": "shaders/normal_light.vert",
+	"fragment_shader": "shaders/normal_light.frag"
+}

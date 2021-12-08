@@ -18,7 +18,7 @@ namespace nh
 				shader->SetUniform("light.ambient", ambient);
 				shader->SetUniform("light.diffuse", diffuse);
 				shader->SetUniform("light.specular", specular);
-				shader->SetUniform("light.position", position);
+				shader->SetUniform("lightPosition", position);
 			}
 		}
 	}
@@ -30,6 +30,11 @@ namespace nh
 
 	bool LightComponent::Read(const rapidjson::Value& value)
 	{
-		return false;
+		JSON_READ(value, ambient);
+		JSON_READ(value, diffuse);
+		JSON_READ(value, specular);
+
+		return true;
+
 	}
 }

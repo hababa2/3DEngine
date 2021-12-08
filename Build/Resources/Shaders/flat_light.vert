@@ -4,7 +4,7 @@ layout(location = 0) in vec3 position;
 layout(location = 1) in vec3 normal;
 layout(location = 2) in vec2 texCoord;
 
-out vec3 fragColor;
+flat out vec3 fragColor;
 out vec2 fragTexCoord;
 
 struct Material
@@ -50,7 +50,7 @@ void main()
 		
 		vec3 reflection = reflect(-lDir, vNorm);
         intensity = max(dot(viewDir, reflection), 0);
-        intensity = pow(intensity, 64);
+        intensity = pow(intensity, material.shininess);
         specular = material.specular * light.specular * intensity;
 	}
 
